@@ -3,21 +3,8 @@ from tkinter import Canvas
 from random import randint
 from time import sleep
 
-from submarine_project.func import create_bubble, move_bubbles, move_ship
-
-# ****** Секция инициализации переменных ******
-
-HEIGHT = 500  # Высота холста
-WIDTH = 800  # Ширина холста
-MID_X = WIDTH / 2  # Средина холста по Х
-MID_y = HEIGHT / 2  # Средина холста по Y
-MIN_BUB_R = 10  # Минимальный размер ( радиус ) пузыря
-MAX_BUB_R = 30  # Максимальный размер пузыря
-MAX_BUB_SPD = 10  # Максимальная скрость пузыря
-SHIP_STEP = 10  # Шаг перемещения подводной лодки
-bub_id = list()  # Список имен пузырей
-bub_r = list()  # Список размеров пузырей
-bub_speed = list()  # Спсиок скоростей пузырей
+from submarine_project.func import create_bubble, move_bubbles, move_ship, clean_up_bubs
+from submarine_project.global_def import HEIGHT, WIDTH, MID_X, MID_y, MIN_BUB_R, MAX_BUB_R, MAX_BUB_SPD, SHIP_STEP
 
 # Создали окно и холст в окне
 win = Tk()
@@ -34,13 +21,14 @@ draw.move(ship_id, MID_X, MID_y)
 draw.move(ship_id2, MID_X, MID_y)
 
 # Свзали событие по нажатию стрелок с функцией, которая двигает подводную лодку
-draw.bind_all('<Key>', lambda event: move_ship(event, SHIP_STEP, draw, ship_id, ship_id2))
+draw.bind_all('<Key>', lambda event: move_ship(event, draw, ship_id, ship_id2))
 
 # Повторять бесконечно
 while True:
     # Создаем только один пузырь из 10
     if randint(1, 10) == 1:
-        create_bubble(HEIGHT, WIDTH, MIN_BUB_R, MAX_BUB_R, MAX_BUB_SPD, draw, bub_id, bub_r, bub_speed)
-    move_bubbles(draw, bub_id, bub_speed)
+        create_bubble(draw)
+    move_bubbles(draw)   # Передвигает все пузыри на экране
+    clean_up_bubs(draw)  # Удаляет пузыри уплывшие за экран
     win.update()
-    sleep(0.001)
+    sleep(0.01)
