@@ -1,6 +1,7 @@
 from random import randint
+from math import sqrt
 
-from submarine_project.global_def import HEIGHT, WIDTH, MID_X, MID_y, MIN_BUB_R, MAX_BUB_R, MAX_BUB_SPD, SHIP_STEP, GAP
+from submarine_project.global_def import HEIGHT, WIDTH, MIN_BUB_R, MAX_BUB_R, MAX_BUB_SPD, SHIP_STEP, GAP, SHIP_R
 from submarine_project.global_def import bub_id, bub_r, bub_speed
 
 
@@ -45,11 +46,12 @@ def get_coords(id_num, draw):
     return x, y
 
 
+# Удаляет пузырь, по его имени
 def del_bubble(i, draw):
-        del bub_r[i]
-        del bub_speed[i]
-        draw.delete(bub_id[i])
-        del bub_id[i]
+    del bub_r[i]
+    del bub_speed[i]
+    draw.delete(bub_id[i])
+    del bub_id[i]
 
 
 # Удаляет пузыри уплывшие за экран
@@ -58,3 +60,23 @@ def clean_up_bubs(draw):
         x, y = get_coords(bub_id[i], draw)
         if x < -GAP:
             del_bubble(i, draw)
+
+
+# Вычисляет растояние между двумя пузырями
+def distance(id1, id2, draw):
+    x1, y1 = get_coords(id1, draw)
+    x2, y2 = get_coords(id2, draw)
+    return sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+
+
+# Возвращает количество очков
+def collision(ship_id2, draw):
+    points = 0
+    for bub in range(len(bub_id) - 1, -1, -1):  # Обходит весь список пузырей сконца
+        if distance(ship_id2, bub_id[bub], draw) < (SHIP_R + bub_r[bub]):  # Если лодка касается пузыря
+            points += (bub_r[bub] + bub_speed[bub])  # Очки добавляются за кажэдый проткнутый пузырь
+            del_bubble(bub, draw)  # Удаляем проткнутый пузырь
+    return points
+
+
+
