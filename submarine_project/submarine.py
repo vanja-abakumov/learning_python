@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import Canvas
 from random import randint
 from time import sleep
+import simpleaudio as sa
 
 from submarine_project.func import create_bubble, move_bubbles, move_ship, clean_up_bubs, collision
 from submarine_project.global_def import HEIGHT, WIDTH, MID_X, MID_y, SHIP_R, NUMBER_BUB, TIME_LIMIT, BONUS_SCORE
@@ -30,6 +31,10 @@ draw.create_text(50, 30, text='TIME', font=label_font, fill='white')
 draw.create_text(150, 30, text='SCORE', font=label_font, fill='white')
 time_text = draw.create_text(50, 150, font=value_font, fill='yellow')
 score_text = draw.create_text(150, 63, font=value_font, fill='yellow')
+
+# Проигрывает музыку в формате *.wav в фоне
+wave_obj = sa.WaveObject.from_wave_file("boat.wav")
+play_obj = wave_obj.play()
 
 score = 0
 
